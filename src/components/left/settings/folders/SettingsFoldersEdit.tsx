@@ -1,16 +1,17 @@
 import type { FC } from '../../../../lib/teact/teact';
 import React, {
-  memo, useCallback, useEffect, useMemo, useState,
+  memo, useCallback, useEffect, useMemo, useRef, useState,
 } from '../../../../lib/teact/teact';
 import { getActions, getGlobal, withGlobal } from '../../../../global';
 
-import type { ApiChatlistExportedInvite } from '../../../../api/types';
+import type { ApiChatFolder, ApiChatlistExportedInvite } from '../../../../api/types';
 import type {
   FolderEditDispatch,
   FoldersState,
 } from '../../../../hooks/reducers/useFoldersReducer';
+import type { IconName } from '../../../../types/icons';
 
-import { STICKER_SIZE_FOLDER_SETTINGS } from '../../../../config';
+import { FILTER_EMOTICON_ICONS, STICKER_SIZE_FOLDER_SETTINGS } from '../../../../config';
 import { isUserId } from '../../../../global/helpers';
 import { selectCanShareFolder } from '../../../../global/selectors';
 import { selectCurrentLimit } from '../../../../global/selectors/limits';
@@ -20,6 +21,7 @@ import { CUSTOM_PEER_EXCLUDED_CHAT_TYPES, CUSTOM_PEER_INCLUDED_CHAT_TYPES } from
 import { LOCAL_TGS_URLS } from '../../../common/helpers/animatedAssets';
 
 import { selectChatFilters } from '../../../../hooks/reducers/useFoldersReducer';
+import useFlag from '../../../../hooks/useFlag';
 import useHistoryBack from '../../../../hooks/useHistoryBack';
 import useOldLang from '../../../../hooks/useOldLang';
 
@@ -27,10 +29,13 @@ import AnimatedIcon from '../../../common/AnimatedIcon';
 import GroupChatInfo from '../../../common/GroupChatInfo';
 import Icon from '../../../common/icons/Icon';
 import PrivateChatInfo from '../../../common/PrivateChatInfo';
+import Button from '../../../ui/Button';
 import FloatingActionButton from '../../../ui/FloatingActionButton';
 import InputText from '../../../ui/InputText';
 import ListItem from '../../../ui/ListItem';
 import Spinner from '../../../ui/Spinner';
+import { LeftColumnBarFolderIcon } from '../../LeftColumnBar';
+import FolderIconPickerMenu from '../../main/FolderIconPickerMenu.async';
 
 type OwnProps = {
   state: FoldersState;
@@ -279,6 +284,21 @@ const SettingsFoldersEdit: FC<OwnProps & StateProps> = ({
     );
   }
 
+  // eslint-disable-next-line no-null/no-null
+  const folderIconPickerButtonRef = useRef<HTMLButtonElement>(null);
+  const [isFolderIconPickerOpen, openFolderIconPicker, closeFolderIconPicker] = useFlag(false);
+
+  const handleFolderIconPickerButtonClicked = useCallback(() => {
+    openFolderIconPicker();
+  }, []);
+
+  const handleFolderIconSet = useCallback((icon: IconName) => {
+    dispatch({
+      type: 'setEmoticon',
+      payload: Object.entries(FILTER_EMOTICON_ICONS).find(([, iconName]) => (icon === iconName))![0],
+    });
+  }, [dispatch]);
+
   return (
     <div className="settings-fab-wrapper">
       <div className="settings-content no-border custom-scroll">
@@ -302,6 +322,28 @@ const SettingsFoldersEdit: FC<OwnProps & StateProps> = ({
             value={state.folder.title.text}
             onChange={handleChange}
             error={state.error && state.error === ERROR_NO_TITLE ? ERROR_NO_TITLE : undefined}
+            append={(
+              <>
+                <Button
+                  round
+                  ref={folderIconPickerButtonRef}
+                  ripple={false}
+                  size="smaller"
+                  color="translucent"
+                  className="folder-icon-picker-button"
+                  onClick={handleFolderIconPickerButtonClicked}
+                >
+                  <LeftColumnBarFolderIcon folder={state.folder as ApiChatFolder} />
+                </Button>
+
+                <FolderIconPickerMenu
+                  iconButtonRef={folderIconPickerButtonRef}
+                  isOpen={isFolderIconPickerOpen}
+                  onIconSelect={handleFolderIconSet}
+                  onClose={closeFolderIconPicker}
+                />
+              </>
+            )}
           />
         </div>
 

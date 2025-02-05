@@ -21,6 +21,7 @@ import { MEMO_EMPTY_ARRAY } from '../../../util/memo';
 import { IS_TOUCH_ENV } from '../../../util/windowEnvironment';
 import { renderTextWithEntities } from '../../common/helpers/renderTextWithEntities';
 
+import useAppLayout from '../../../hooks/useAppLayout';
 import useDerivedState from '../../../hooks/useDerivedState';
 import { useFolderManagerForUnreadCounters } from '../../../hooks/useFolderManager';
 import useHistoryBack from '../../../hooks/useHistoryBack';
@@ -58,8 +59,8 @@ type StateProps = {
   sessions?: Record<string, ApiSession>;
 };
 
-const SAVED_MESSAGES_HOTKEY = '0';
-const FIRST_FOLDER_INDEX = 0;
+export const SAVED_MESSAGES_HOTKEY = '0';
+export const FIRST_FOLDER_INDEX = 0;
 
 const ChatFolders: FC<OwnProps & StateProps> = ({
   foldersDispatch,
@@ -96,6 +97,8 @@ const ChatFolders: FC<OwnProps & StateProps> = ({
   const transitionRef = useRef<HTMLDivElement>(null);
 
   const lang = useLang();
+
+  const { isMobile } = useAppLayout();
 
   useEffect(() => {
     loadChatFolders();
@@ -255,14 +258,14 @@ const ChatFolders: FC<OwnProps & StateProps> = ({
 
   const isNotInFirstFolderRef = useRef();
   isNotInFirstFolderRef.current = !isInFirstFolder;
-  useEffect(() => (isNotInFirstFolderRef.current ? captureEscKeyListener(() => {
+  useEffect(() => (isMobile && isNotInFirstFolderRef.current ? captureEscKeyListener(() => {
     if (isNotInFirstFolderRef.current) {
       setActiveChatFolder({ activeChatFolder: FIRST_FOLDER_INDEX });
     }
-  }) : undefined), [activeChatFolder, setActiveChatFolder]);
+  }) : undefined), [activeChatFolder, setActiveChatFolder, isMobile]);
 
   useHistoryBack({
-    isActive: !isInFirstFolder,
+    isActive: !isInFirstFolder && isMobile,
     onBack: () => setActiveChatFolder({ activeChatFolder: FIRST_FOLDER_INDEX }, { forceOnHeavyAnimation: true }),
   });
 
@@ -334,7 +337,7 @@ const ChatFolders: FC<OwnProps & StateProps> = ({
       )}
     >
       {shouldRenderStoryRibbon && <StoryRibbon isClosing={isStoryRibbonClosing} />}
-      {shouldRenderFolders ? (
+      {(shouldRenderFolders && isMobile) ? (
         <TabList
           contextRootElementSelector="#LeftColumn"
           tabs={folderTabs}

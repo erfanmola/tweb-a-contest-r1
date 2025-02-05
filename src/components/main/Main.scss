@@ -1,4 +1,6 @@
 #Main {
+  --left-column-bar-width: 5rem;
+
   height: 100%;
   text-align: left;
   overflow: hidden;
@@ -21,7 +23,9 @@
 .has-call-header {
   --call-header-height: 2rem;
 
-  #LeftColumn, #MiddleColumn, #RightColumn-wrapper {
+  #LeftColumn,
+  #MiddleColumn,
+  #RightColumn-wrapper {
     height: calc(100% - var(--call-header-height));
     margin-top: var(--call-header-height);
   }
@@ -64,7 +68,7 @@
     }
 
     &::after {
-      content: '';
+      content: "";
       display: block;
       position: absolute;
       left: 0;
@@ -120,7 +124,7 @@
 
     // Fix: when opening the SymbolMenu, the chat list flashes in the background
     body.is-symbol-menu-open &::before {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       right: 0;

@@ -1,6 +1,7 @@
 import type {
   ApiLimitType, ApiLimitTypeForPromo, ApiPremiumSection, ApiReactionEmoji,
 } from './api/types';
+import type { IconName } from './types/icons';
 
 export const APP_CODE_NAME = 'A';
 export const APP_NAME = process.env.APP_NAME || `Telegram Web ${APP_CODE_NAME}`;
@@ -427,3 +428,36 @@ export const PREMIUM_LIMITS_ORDER: ApiLimitTypeForPromo[] = [
   'dialogFiltersChats',
   'recommendedChannels',
 ];
+
+export const FILTER_EMOTICON_ICONS: Record<string, IconName> = {
+  '💬': 'filter-chats',
+  '👤': 'filter-user',
+  '🤖': 'filter-bot',
+  '⭐': 'filter-star',
+  '👥': 'filter-group',
+  '📢': 'filter-channel',
+  '📁': 'filter-folder',
+  '✅': 'filter-chat',
+  // '🔔': 'Unmuted',
+  // '📋': 'Setup',
+  // '🐱': 'Cat',
+  // '👑': 'Crown',
+  // '🌹': 'Flower',
+  // '🎮': 'Game',
+  // '🏠': 'Home',
+  // '❤️': 'Love',
+  // '🎭': 'Mask',
+  // '🍸': 'Party',
+  // '⚽': 'Sport',
+  // '🎓': 'Study',
+  // '📈': 'Trade',
+  // '✈️': 'Travel',
+  // '💼': 'Work',
+  // '🚫': 'Airplane',
+  // '📕': 'Book',
+  // '💡': 'Light',
+  // '👍': 'Like',
+  // '💰': 'Money',
+  // '🎵': 'Note',
+  // '🎨': 'Palette',
+};

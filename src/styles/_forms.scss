@@ -23,7 +23,9 @@
     font-size: 1rem;
     font-weight: var(--font-weight-normal);
     color: var(--color-placeholders);
-    transition: transform 0.15s ease-out, color 0.15s ease-out;
+    transition:
+      transform 0.15s ease-out,
+      color 0.15s ease-out;
     cursor: var(--custom-cursor, text);
     pointer-events: none;
     transform-origin: left center;
@@ -99,6 +101,15 @@
     .form-control:focus + label,
     .form-control.focus + label {
       transform: scale(0.75) translate(1.5rem, -2.25rem);
+    }
+  }
+
+  &.with-append {
+    .append {
+      position: absolute;
+      inset-inline-end: 0.25rem;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 }

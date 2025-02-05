@@ -1,5 +1,5 @@
 import type {
-  ChangeEvent, FormEvent, RefObject,
+  ChangeEvent, FormEvent, ReactNode, RefObject,
 } from 'react';
 import type { FC } from '../../lib/teact/teact';
 import React, { memo } from '../../lib/teact/teact';
@@ -30,6 +30,7 @@ type OwnProps = {
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void;
+  append?: ReactNode;
 };
 
 const InputText: FC<OwnProps> = ({
@@ -54,11 +55,14 @@ const InputText: FC<OwnProps> = ({
   onKeyDown,
   onBlur,
   onPaste,
+  append,
 }) => {
   const lang = useOldLang();
   const labelText = error || success || label;
+  const withAppend: string = append ? 'with-append' : '';
   const fullClassName = buildClassName(
     'input-group',
+    withAppend,
     value && 'touched',
     error ? 'error' : success && 'success',
     disabled && 'disabled',
@@ -95,6 +99,7 @@ const InputText: FC<OwnProps> = ({
       {labelText && (
         <label htmlFor={id}>{labelText}</label>
       )}
+      {append && <div className="append">{append}</div>}
     </div>
   );
 };

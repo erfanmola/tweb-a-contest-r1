@@ -22,13 +22,19 @@
     white-space: nowrap;
   }
 
-  .SearchInput {
+  .main-menu ~ .SearchInput {
     margin-left: 0.625rem;
     max-width: calc(100% - 3.25rem);
 
     @media (max-width: 600px) {
       max-width: calc(100% - 3rem);
     }
+  }
+
+  .SearchInput:not(.main-menu ~ .SearchInput) {
+    // max-width: calc(100% - 1.25rem);
+    margin-left: 0.625rem;
+    transform: translateX(-0.625rem);
   }
 
   @media (max-width: 600px) {
@@ -66,4 +72,8 @@
       --offset-x: -4.125rem;
     }
   }
+}
+
+#LeftColumn-container {
+  display: flex;
 }
