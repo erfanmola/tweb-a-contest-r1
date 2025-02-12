@@ -1,6 +1,7 @@
 import type { TeactNode } from '../../lib/teact/teact';
 
 import type { CallbackAction } from '../../global/types';
+import type { Api as GramJs } from '../../lib/gramjs';
 import type { IconName } from '../../types/icons';
 import type { RegularLangFnParameters } from '../../util/localization';
 import type { ApiDocument, ApiPhoto, ApiReaction } from './messages';
@@ -65,6 +66,9 @@ export interface ApiAttachment {
 export interface ApiWallpaper {
   slug: string;
   document: ApiDocument;
+  pattern?: true | undefined;
+  settings?: GramJs.WallPaperSettings | undefined;
+  dark?: true | undefined;
 }
 
 export interface ApiSession {

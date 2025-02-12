@@ -35,7 +35,9 @@ export function buildApiWallpaper(wallpaper: GramJs.TypeWallPaper): ApiWallpaper
     return undefined;
   }
 
-  const { slug } = wallpaper;
+  const {
+    slug, pattern, settings, dark,
+  } = wallpaper;
 
   const document = buildApiDocument(wallpaper.document);
 
@@ -46,6 +48,9 @@ export function buildApiWallpaper(wallpaper: GramJs.TypeWallPaper): ApiWallpaper
   return {
     slug,
     document,
+    pattern,
+    settings,
+    dark,
   };
 }
 

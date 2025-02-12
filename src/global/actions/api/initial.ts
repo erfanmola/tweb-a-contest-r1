@@ -3,6 +3,7 @@ import { ManagementProgress } from '../../../types';
 
 import {
   CUSTOM_BG_CACHE_NAME,
+  CUSTOM_WALLPAPER_CACHE_NAME,
   LANG_CACHE_NAME,
   LOCK_SCREEN_ANIMATION_DURATION_MS,
   MEDIA_CACHE_NAME,
@@ -195,6 +196,7 @@ addActionHandler('reset', (global, actions): ActionReturnType => {
   void cacheApi.clear(MEDIA_CACHE_NAME_AVATARS);
   void cacheApi.clear(MEDIA_PROGRESSIVE_CACHE_NAME);
   void cacheApi.clear(CUSTOM_BG_CACHE_NAME);
+  void cacheApi.clear(CUSTOM_WALLPAPER_CACHE_NAME);
 
   MAIN_IDB_STORE.clear();
   PASSCODE_IDB_STORE.clear();

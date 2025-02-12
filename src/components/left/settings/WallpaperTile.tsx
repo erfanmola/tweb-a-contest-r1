@@ -1,6 +1,6 @@
 import type { FC } from '../../../lib/teact/teact';
 import React, {
-  memo, useCallback, useEffect, useRef,
+  memo, useCallback, useEffect, useMemo, useRef,
   useState,
 } from '../../../lib/teact/teact';
 
@@ -8,10 +8,12 @@ import type { ApiWallpaper } from '../../../api/types';
 import type { ThemeKey } from '../../../types';
 import { UPLOADING_WALLPAPER_SLUG } from '../../../types';
 
-import { CUSTOM_BG_CACHE_NAME } from '../../../config';
+import { CUSTOM_BG_CACHE_NAME, CUSTOM_WALLPAPER_CACHE_NAME } from '../../../config';
 import buildClassName from '../../../util/buildClassName';
+import buildStyle from '../../../util/buildStyle';
 import * as cacheApi from '../../../util/cacheApi';
 import { fetchBlob } from '../../../util/files';
+import ChatBackgroundGradientRenderer, { getColorsFromWallPaper } from '../../../util/gradientRenderer';
 
 import useCanvasBlur from '../../../hooks/useCanvasBlur';
 import useMedia from '../../../hooks/useMedia';
@@ -41,6 +43,8 @@ const WallpaperTile: FC<OwnProps> = ({
   const localBlobUrl = document.previewBlobUrl;
   const previewBlobUrl = useMedia(`${localMediaHash}?size=m`);
   const thumbRef = useCanvasBlur(document.thumbnail?.dataUri, Boolean(previewBlobUrl), true);
+  // eslint-disable-next-line no-null/no-null
+  const gradientRef = useRef<HTMLDivElement | HTMLCanvasElement | null | undefined>(null);
   const { transitionClassNames } = useShowTransitionDeprecated(
     Boolean(previewBlobUrl || localBlobUrl),
     undefined,
@@ -67,9 +71,10 @@ const WallpaperTile: FC<OwnProps> = ({
     (async () => {
       const blob = await fetchBlob(fullMedia!);
       await cacheApi.save(CUSTOM_BG_CACHE_NAME, cacheKeyRef.current!, blob);
+      await cacheApi.save(CUSTOM_WALLPAPER_CACHE_NAME, cacheKeyRef.current!, JSON.stringify(wallpaper));
       onClick(slug);
     })();
-  }, [fullMedia, onClick, slug]);
+  }, [fullMedia, onClick, slug, wallpaper]);
 
   useEffect(() => {
     // If we've clicked on a wallpaper, select it when full media is loaded
@@ -93,13 +98,44 @@ const WallpaperTile: FC<OwnProps> = ({
     isSelected && 'selected',
   );
 
+  useEffect(() => {
+    if (!wallpaper.pattern || !wallpaper.settings) return;
+    const colors = getColorsFromWallPaper(wallpaper);
+    const gradientRenderer = ChatBackgroundGradientRenderer.create(colors);
+    if (gradientRenderer.canvas) {
+      gradientRef.current = gradientRenderer.canvas;
+    }
+  }, [wallpaper]);
+
+  const intensity = useMemo(() => {
+    return wallpaper.settings?.intensity ? (wallpaper.settings!.intensity / 100) : undefined;
+  }, [wallpaper]);
+
+  const isDarkPattern = useMemo(() => {
+    if (!wallpaper.pattern) return false;
+    // if (isDarkTheme) return true;
+    return (!!intensity && intensity < 0);
+  }, [intensity, wallpaper.pattern]);
+
   return (
-    <div className={className} onClick={handleClick}>
+    <div
+      className={buildClassName(
+        className, wallpaper.pattern && 'pattern', isDarkPattern && 'dark-pattern',
+      )}
+      onClick={handleClick}
+    >
       <div className="media-inner">
         <canvas
           ref={thumbRef}
           className="thumbnail"
         />
+        {wallpaper.pattern && (
+          <div
+            ref={(el) => el && gradientRef.current && el.appendChild(gradientRef.current)}
+            className="gradient"
+            style={buildStyle(isDarkPattern && `--pattern-image: url(${previewBlobUrl || localBlobUrl})`)}
+          />
+        )}
         <img
           src={previewBlobUrl || localBlobUrl}
           className={buildClassName('full-media', transitionClassNames)}

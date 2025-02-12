@@ -1,6 +1,6 @@
 import type { FC } from '../../../lib/teact/teact';
 import React, {
-  memo, useCallback, useEffect, useRef,
+  memo, useCallback, useEffect, useMemo, useRef,
 } from '../../../lib/teact/teact';
 import { getActions, withGlobal } from '../../../global';
 
@@ -120,6 +120,12 @@ const SettingsGeneralBackground: FC<OwnProps & StateProps> = ({
 
   const isUploading = loadedWallpapers?.[0] && loadedWallpapers[0].slug === UPLOADING_WALLPAPER_SLUG;
 
+  const isBlurrable = useMemo(() => (!!(loadedWallpapers
+    && loadedWallpapers.find((item) => (
+      item.slug === background
+    && (!item.pattern)
+    )))), [loadedWallpapers, background]);
+
   return (
     <div className="SettingsGeneralBackground settings-content custom-scroll">
       <div className="settings-item pt-3">
@@ -146,8 +152,9 @@ const SettingsGeneralBackground: FC<OwnProps & StateProps> = ({
 
         <Checkbox
           label={lang('BackgroundBlurred')}
-          checked={Boolean(isBlurred)}
+          checked={isBlurrable && Boolean(isBlurred)}
           onChange={handleWallPaperBlurChange}
+          disabled={!isBlurrable}
         />
       </div>
 

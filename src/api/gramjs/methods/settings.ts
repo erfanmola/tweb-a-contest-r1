@@ -188,7 +188,8 @@ export async function fetchWallpapers() {
       return false;
     }
 
-    return !wallpaper.pattern && wallpaper.document.mimeType !== 'application/x-tgwallpattern';
+    // return !wallpaper.pattern && wallpaper.document.mimeType !== 'application/x-tgwallpattern';
+    return (!wallpaper.pattern || (wallpaper.pattern && wallpaper.settings));
   }) as GramJs.WallPaper[];
 
   filteredWallpapers.forEach((wallpaper) => {

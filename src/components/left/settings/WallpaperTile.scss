@@ -4,6 +4,39 @@
   cursor: var(--custom-cursor, pointer);
   position: relative;
 
+  &.pattern {
+    .media-inner {
+      > img,
+      > canvas {
+        opacity: 0.3;
+        mix-blend-mode: overlay;
+      }
+    }
+  }
+
+  &.dark-pattern {
+    .media-inner {
+      background-color: #000;
+
+      > img,
+      > canvas {
+        display: none;
+      }
+
+      .gradient {
+        > canvas[data-colors] {
+          -webkit-mask: center;
+          -webkit-mask-size: cover;
+          -webkit-mask-image: var(--pattern-image);
+          mask: center;
+          mask-size: cover;
+          mask-image: var(--pattern-image);
+          opacity: 0.7;
+        }
+      }
+    }
+  }
+
   .media-inner,
   &::after {
     position: absolute;

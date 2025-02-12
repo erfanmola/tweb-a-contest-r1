@@ -1,0 +1,82 @@
+#ChatBackgroundContainer {
+  // background-color: var(--color-background);
+  --wallpaper-pattern-image: url("../../assets/chat-bg-pattern-black.png");
+  --wallpaper-pattern-width: 510px;
+
+  &::before,
+  &::after {
+    background-image: none;
+    background-color: transparent;
+    // mix-blend-mode: normal;
+  }
+
+  &.default:not(.dark-pattern) {
+    &::after {
+      opacity: 0.25;
+    }
+  }
+
+  &.pattern {
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background-position: top right;
+      background-repeat: repeat;
+      mix-blend-mode: overlay;
+    }
+  }
+
+  &:not(.dark-pattern) {
+    &::after {
+      mix-blend-mode: overlay;
+      background: center repeat;
+      background-size: var(--wallpaper-pattern-width) auto;
+      background-image: var(--wallpaper-pattern-image);
+      opacity: 0.3;
+    }
+  }
+
+  &.dark-pattern {
+    background-color: #000;
+
+    > canvas[data-colors] {
+      -webkit-mask: center repeat;
+      -webkit-mask-size: var(--wallpaper-pattern-width) auto;
+      -webkit-mask-image: var(--wallpaper-pattern-image);
+      mask: center repeat;
+      mask-size: var(--wallpaper-pattern-width);
+      mask-image: var(--wallpaper-pattern-image);
+      opacity: 0.3;
+    }
+  }
+
+  &.plain {
+    &::after {
+      position: absolute;
+      inset: 0;
+      background-color: var(--theme-background-color);
+    }
+  }
+
+  > canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+
+    &.pattern:not(.dark-pattern) {
+      mix-blend-mode: soft-light;
+    }
+  }
+
+  // div.blurred {
+  //   position: absolute;
+  //   content: "";
+  //   inset: 0;
+  //   backdrop-filter: blur(12px);
+  // }
+}

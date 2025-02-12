@@ -174,7 +174,11 @@ addActionHandler('loadWallpapers', async (global): Promise<void> => {
     ...global,
     settings: {
       ...global.settings,
-      loadedWallpapers: result.wallpapers,
+      loadedWallpapers: result.wallpapers.filter(
+        (item, key) => key === result.wallpapers.indexOf(
+          result.wallpapers.find((i) => i.slug === item.slug)!,
+        ),
+      ),
     },
   };
   setGlobal(global);

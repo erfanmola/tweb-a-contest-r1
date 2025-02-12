@@ -71,7 +71,7 @@ function GiftComposer({
   const [shouldHideName, setShouldHideName] = useState<boolean>(false);
   const [shouldPayForUpgrade, setShouldPayForUpgrade] = useState<boolean>(false);
 
-  const customBackgroundValue = useCustomBackground(theme, customBackground);
+  const customBackgroundValue = useCustomBackground(theme, customBackground).background;
 
   const isStarGift = 'id' in gift;
   const isPeerUser = peer && isApiPeerUser(peer);

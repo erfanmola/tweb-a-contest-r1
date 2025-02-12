@@ -86,6 +86,7 @@ import SeenByModal from '../common/SeenByModal.async';
 import UnpinAllMessagesModal from '../common/UnpinAllMessagesModal.async';
 import Button from '../ui/Button';
 import Transition from '../ui/Transition';
+import ChatBackground from './ChatBackground';
 import ChatLanguageModal from './ChatLanguageModal.async';
 import { DropAreaState } from './composer/DropArea';
 import EmojiInteractionAnimation from './EmojiInteractionAnimation.async';
@@ -501,9 +502,16 @@ function MiddleColumn({
           onDoubleClick={resetResize}
         />
       )}
-      <div
+      {/* <div
         className={bgClassName}
         style={customBackgroundValue ? `--custom-background: ${customBackgroundValue}` : undefined}
+      /> */}
+      <ChatBackground
+        className={bgClassName}
+        customBackgroundValue={customBackgroundValue}
+        backgroundColorValue={backgroundColor}
+        isBackgroundBlurred={isBackgroundBlurred}
+        patternColorValue={patternColor}
       />
       <div id="middle-column-portals" />
       {Boolean(renderingChatId && renderingThreadId) && (
@@ -731,7 +739,7 @@ export default memo(withGlobal<OwnProps>(
     const state: StateProps = {
       theme,
       customBackground,
-      backgroundColor,
+      backgroundColor: !customBackground ? backgroundColor : undefined,
       patternColor,
       isLeftColumnShown,
       isRightColumnShown: selectIsRightColumnShown(global, isMobile),
