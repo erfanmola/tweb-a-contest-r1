@@ -40,6 +40,7 @@ interface ISelectedTextFormats {
   strikethrough?: boolean;
   monospace?: boolean;
   spoiler?: boolean;
+  blockquote?: boolean;
 }
 
 const TEXT_FORMAT_BY_TAG_NAME: Record<string, keyof ISelectedTextFormats> = {
@@ -51,6 +52,7 @@ const TEXT_FORMAT_BY_TAG_NAME: Record<string, keyof ISelectedTextFormats> = {
   DEL: 'strikethrough',
   CODE: 'monospace',
   SPAN: 'spoiler',
+  BLOCKQUOTE: 'blockquote',
 };
 const fragmentEl = document.createElement('div');
 
@@ -189,7 +191,7 @@ const TextFormatter: FC<OwnProps> = ({
       return 'active';
     }
 
-    if (key === 'monospace' || key === 'strikethrough') {
+    if (['monospace', 'strikethrough', 'blockquote'].includes(key)) {
       if (Object.keys(selectedTextFormats).some(
         (fKey) => fKey !== key && Boolean(selectedTextFormats[fKey as keyof ISelectedTextFormats]),
       )) {
@@ -315,6 +317,32 @@ const TextFormatter: FC<OwnProps> = ({
 
     const text = getSelectedText(true);
     document.execCommand('insertHTML', false, `<code class="text-entity-code" dir="auto">${text}</code>`);
+    onClose();
+  });
+
+  const handleBlockquoteText = useLastCallback(() => {
+    if (selectedTextFormats.blockquote) {
+      const element = getSelectedElement();
+      if (
+        !selectedRange
+        || !element
+        || element.tagName !== 'BLOCKQUOTE'
+        || !element.textContent
+      ) {
+        return;
+      }
+
+      element.replaceWith(element.textContent);
+      setSelectedTextFormats((selectedFormats) => ({
+        ...selectedFormats,
+        blockquote: false,
+      }));
+
+      return;
+    }
+
+    const text = getSelectedText(true);
+    document.execCommand('insertHTML', false, `<blockquote class="blockquote" dir="auto">${text}</blockquote>`);
     onClose();
   });
 
@@ -464,6 +492,14 @@ const TextFormatter: FC<OwnProps> = ({
           onClick={handleMonospaceText}
         >
           <Icon name="monospace" />
+        </Button>
+        <Button
+          color="translucent"
+          ariaLabel="Blockquote text"
+          className={getFormatButtonClassName('blockquote')}
+          onClick={handleBlockquoteText}
+        >
+          <Icon name="quote-text" />
         </Button>
         <div className="TextFormatter-divider" />
         <Button color="translucent" ariaLabel={lang('TextFormat.AddLinkTitle')} onClick={openLinkControl}>
