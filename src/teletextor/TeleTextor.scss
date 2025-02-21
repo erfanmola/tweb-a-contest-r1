@@ -1,0 +1,32 @@
+.teletextor {
+  background-color: white;
+  position: relative;
+  line-height: normal;
+  flex-grow: 1;
+
+  * {
+    line-height: normal;
+  }
+
+  .teletextor-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    padding-inline-start: 0.5rem;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .teletextor-editor {
+    position: relative;
+    inset: 0;
+    cursor: text;
+    padding: 1rem 0.5rem;
+    outline: none;
+
+    &:empty ~ .teletextor-placeholder {
+      opacity: 0.425;
+    }
+  }
+}
